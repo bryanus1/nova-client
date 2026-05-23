@@ -41,7 +41,7 @@
       {
         "command": "nova-client.createEnvironment",
         "title": "Nova: Create Environment",
-        "icon": "$(add)"
+        "icon": "$(variables)"
       },
       {
         "command": "nova-client.createRequest",
