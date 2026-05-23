@@ -12,7 +12,6 @@
   const urlInput = document.getElementById('url-input');
   const sendBtn = document.getElementById('send-btn');
   const saveBtn = document.getElementById('save-btn');
-  const requestNameInput = document.getElementById('request-name-input');
   const envSelect = document.getElementById('env-select');
 
   const loadingOverlay = document.getElementById('loading-overlay');
@@ -262,9 +261,6 @@
       activeEnvironmentId: activeEnvId
     });
 
-    // Set headers
-    requestNameInput.value = requestItem.name || 'Untitled Request';
-    
     const req = requestItem.request || {};
     methodSelect.value = (req.method || 'GET').toUpperCase();
     
@@ -366,7 +362,7 @@
 
   // Assemble current form parameters into a standard Postman-like NovaItem request payload
   function assembleCurrentRequest() {
-    const name = requestNameInput.value.trim() || 'Untitled Request';
+    const name = currentRequestItem ? currentRequestItem.name : 'Untitled Request';
     const method = methodSelect.value;
     const url = urlInput.value.trim();
 

@@ -287,17 +287,6 @@ export class NovaEditorPanel {
         <div class="app-container">
            <!-- Header (Request Line) -->
           <header class="header">
-            <div class="meta-line" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 20px;">
-              <div class="request-name-container" style="flex-grow: 1; display: flex; align-items: center; gap: 8px;">
-                <input type="text" id="request-name-input" class="request-name-input" placeholder="Request name..." style="font-size: 16px; font-weight: 600; border-bottom: 1px dashed var(--glass-border); padding: 4px 0; width: 100%;" />
-              </div>
-              <div class="environment-container" style="display: flex; align-items: center; gap: 8px;">
-                <span class="label">Environment:</span>
-                <select id="env-select" class="env-select">
-                  <option value="none">No Environment</option>
-                </select>
-              </div>
-            </div>
             <div class="request-line">
               <select id="method-select" class="method-select">
                 <option value="GET">GET</option>
@@ -313,6 +302,14 @@ export class NovaEditorPanel {
               </div>
               <button id="send-btn" class="send-btn">Send</button>
               <button id="save-btn" class="save-btn">Save</button>
+            </div>
+            <div class="meta-line" style="margin-top: 10px; display: flex; justify-content: flex-end; align-items: center; gap: 20px;">
+              <div class="environment-container" style="display: flex; align-items: center; gap: 8px;">
+                <span class="label">Environment:</span>
+                <select id="env-select" class="env-select">
+                  <option value="none">No Environment</option>
+                </select>
+              </div>
             </div>
           </header>
 
