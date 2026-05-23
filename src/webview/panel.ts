@@ -317,6 +317,7 @@ export class NovaEditorPanel {
                 <button class="tab-btn active" data-tab="params">Params</button>
                 <button class="tab-btn" data-tab="headers">Headers</button>
                 <button class="tab-btn" data-tab="body">Body</button>
+                <button class="tab-btn" data-tab="auth">Auth</button>
               </div>
               
               <div class="tab-content active" id="tab-params">
@@ -410,6 +411,59 @@ export class NovaEditorPanel {
                     </tbody>
                   </table>
                   <button class="add-row-btn" id="add-formdata-btn">+ Add Field</button>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-auth">
+                <div class="section-title">Authorization</div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                  <span class="label">Type:</span>
+                  <select id="auth-type-select" class="mini-select">
+                    <option value="none">No Auth</option>
+                    <option value="bearer">Bearer Token</option>
+                    <option value="basic">Basic Auth</option>
+                    <option value="apikey">API Key</option>
+                  </select>
+                </div>
+                
+                <div class="auth-fields-container active-auth-fields" id="auth-none-container">
+                  <div class="empty-state" style="padding: 20px;">This request does not use authorization.</div>
+                </div>
+
+                <div class="auth-fields-container" id="auth-bearer-container" style="display: none; flex-direction: column; gap: 8px;">
+                  <span class="label">Token:</span>
+                  <input type="text" id="auth-bearer-token" class="table-input" placeholder="Enter Bearer Token (e.g. {{myToken}})" style="width: 100%;" />
+                </div>
+
+                <div class="auth-fields-container" id="auth-basic-container" style="display: none; flex-direction: column; gap: 8px;">
+                  <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                      <span class="label">Username:</span>
+                      <input type="text" id="auth-basic-username" class="table-input" placeholder="Username" />
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                      <span class="label">Password:</span>
+                      <input type="password" id="auth-basic-password" class="table-input" placeholder="Password" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="auth-fields-container" id="auth-apikey-container" style="display: none; flex-direction: column; gap: 8px;">
+                  <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                      <span class="label">Key:</span>
+                      <input type="text" id="auth-apikey-key" class="table-input" placeholder="X-API-Key" />
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                      <span class="label">Value:</span>
+                      <input type="text" id="auth-apikey-value" class="table-input" placeholder="Value" />
+                    </div>
+                  </div>
+                  <span class="label">Add to:</span>
+                  <select id="auth-apikey-in" class="mini-select" style="align-self: flex-start;">
+                    <option value="header">Header</option>
+                    <option value="query">Query Params</option>
+                  </select>
                 </div>
               </div>
             </section>

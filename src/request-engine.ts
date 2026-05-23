@@ -56,6 +56,41 @@ export class RequestEngine {
       }
     }
 
+    // 3.5. Resolve Authorization
+    if (request.auth && request.auth.type && request.auth.type !== 'none') {
+      const auth = request.auth;
+      if (auth.type === 'bearer' && auth.bearer) {
+        const tokenVal = auth.bearer.find(b => b.key === 'token')?.value || '';
+        const resolvedToken = VariableResolver.resolve(tokenVal, activeEnv);
+        if (resolvedToken) {
+          headersMap.set('Authorization', `Bearer ${resolvedToken}`);
+        }
+      } else if (auth.type === 'basic' && auth.basic) {
+        const user = auth.basic.find(b => b.key === 'username')?.value || '';
+        const pass = auth.basic.find(b => b.key === 'password')?.value || '';
+        const resolvedUser = VariableResolver.resolve(user, activeEnv);
+        const resolvedPass = VariableResolver.resolve(pass, activeEnv);
+        const credentials = Buffer.from(`${resolvedUser}:${resolvedPass}`).toString('base64');
+        headersMap.set('Authorization', `Basic ${credentials}`);
+      } else if (auth.type === 'apikey' && auth.apikey) {
+        const key = auth.apikey.find(k => k.key === 'key')?.value || '';
+        const val = auth.apikey.find(v => v.key === 'value')?.value || '';
+        const position = auth.apikey.find(i => i.key === 'in')?.value || 'header';
+        
+        const resolvedKey = VariableResolver.resolve(key, activeEnv);
+        const resolvedVal = VariableResolver.resolve(val, activeEnv);
+
+        if (resolvedKey) {
+          if (position === 'header') {
+            headersMap.set(resolvedKey, resolvedVal);
+          } else if (position === 'query') {
+            const qChar = urlWithProtocol.includes('?') ? '&' : '?';
+            urlWithProtocol = `${urlWithProtocol}${qChar}${encodeURIComponent(resolvedKey)}=${encodeURIComponent(resolvedVal)}`;
+          }
+        }
+      }
+    }
+
     // 4. Resolve Body
     let requestBody: any = undefined;
     if (request.body && method !== 'GET' && method !== 'HEAD') {

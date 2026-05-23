@@ -76,6 +76,16 @@
     });
   });
 
+  // 2.5. Authorization Type Toggles
+  const authTypeSelect = document.getElementById('auth-type-select');
+  authTypeSelect.addEventListener('change', (e) => {
+    const type = e.target.value;
+    document.querySelectorAll('.auth-fields-container').forEach(c => {
+      c.style.display = 'none';
+    });
+    document.getElementById(`auth-${type}-container`).style.display = 'flex';
+  });
+
   // 3. Dynamic Key-Value Tables Handler
   setupKeyValueTable('params-table', 'add-param-btn');
   setupKeyValueTable('headers-table', 'add-header-btn');
@@ -315,6 +325,31 @@
       }));
       populateTable('formdata-table', list);
     }
+
+    // 2.5. Populate Authorization Details
+    const auth = req.auth || { type: 'none' };
+    const authType = auth.type || 'none';
+    authTypeSelect.value = authType;
+    authTypeSelect.dispatchEvent(new Event('change'));
+
+    // Reset inputs
+    document.getElementById('auth-bearer-token').value = '';
+    document.getElementById('auth-basic-username').value = '';
+    document.getElementById('auth-basic-password').value = '';
+    document.getElementById('auth-apikey-key').value = '';
+    document.getElementById('auth-apikey-value').value = '';
+    document.getElementById('auth-apikey-in').value = 'header';
+
+    if (authType === 'bearer' && auth.bearer) {
+      document.getElementById('auth-bearer-token').value = auth.bearer.find(b => b.key === 'token')?.value || '';
+    } else if (authType === 'basic' && auth.basic) {
+      document.getElementById('auth-basic-username').value = auth.basic.find(b => b.key === 'username')?.value || '';
+      document.getElementById('auth-basic-password').value = auth.basic.find(b => b.key === 'password')?.value || '';
+    } else if (authType === 'apikey' && auth.apikey) {
+      document.getElementById('auth-apikey-key').value = auth.apikey.find(k => k.key === 'key')?.value || '';
+      document.getElementById('auth-apikey-value').value = auth.apikey.find(v => v.key === 'value')?.value || '';
+      document.getElementById('auth-apikey-in').value = auth.apikey.find(i => i.key === 'in')?.value || 'header';
+    }
   }
 
   function setLoadingState(loading) {
@@ -360,6 +395,29 @@
       }));
     }
 
+    // Assemble Authorization Configuration
+    const authType = authTypeSelect.value;
+    const reqAuth = {
+      type: authType
+    };
+
+    if (authType === 'bearer') {
+      reqAuth.bearer = [
+        { key: 'token', value: document.getElementById('auth-bearer-token').value, type: 'string' }
+      ];
+    } else if (authType === 'basic') {
+      reqAuth.basic = [
+        { key: 'username', value: document.getElementById('auth-basic-username').value, type: 'string' },
+        { key: 'password', value: document.getElementById('auth-basic-password').value, type: 'string' }
+      ];
+    } else if (authType === 'apikey') {
+      reqAuth.apikey = [
+        { key: 'key', value: document.getElementById('auth-apikey-key').value, type: 'string' },
+        { key: 'value', value: document.getElementById('auth-apikey-value').value, type: 'string' },
+        { key: 'in', value: document.getElementById('auth-apikey-in').value, type: 'string' }
+      ];
+    }
+
     return {
       id: currentRequestItem ? currentRequestItem.id : '',
       name: name,
@@ -370,7 +428,8 @@
           protocol: url.split('://')[0] || 'http',
         },
         header: getTableData('headers-table'),
-        body: reqBody
+        body: reqBody,
+        auth: reqAuth
       }
     };
   }

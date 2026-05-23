@@ -24,6 +24,13 @@ export interface NovaBody {
   };
 }
 
+export interface NovaAuth {
+  type: 'none' | 'bearer' | 'basic' | 'apikey';
+  bearer?: { key: string; value: string; type: string }[];
+  basic?: { key: string; value: string; type: string }[];
+  apikey?: { key: string; value: string; type: string }[];
+}
+
 export interface NovaRequest {
   method: string;
   url: {
@@ -35,6 +42,7 @@ export interface NovaRequest {
   } | string;
   header?: NovaHeader[];
   body?: NovaBody;
+  auth?: NovaAuth;
   description?: string;
 }
 
