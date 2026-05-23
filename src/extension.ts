@@ -92,6 +92,20 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // Command: Edit Environment File Directly
+  context.subscriptions.push(
+    vscode.commands.registerCommand('nova-client.editEnvironment', async (node: NovaNode) => {
+      if (node && node.filePath) {
+        try {
+          const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(node.filePath));
+          await vscode.window.showTextDocument(doc);
+        } catch (err: any) {
+          vscode.window.showErrorMessage(`Failed to open environment file: ${err.message}`);
+        }
+      }
+    })
+  );
+
   // Command: Create Request
   context.subscriptions.push(
     vscode.commands.registerCommand('nova-client.createRequest', async (node: NovaNode) => {

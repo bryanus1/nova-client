@@ -73,6 +73,11 @@
         "title": "Nova: Open Request"
       },
       {
+        "command": "nova-client.editEnvironment",
+        "title": "Nova: Edit Environment",
+        "icon": "$(edit)"
+      },
+      {
         "command": "nova-client.deleteItem",
         "title": "Nova: Delete",
         "icon": "$(trash)"
@@ -103,6 +108,11 @@
       ],
       "view/item/context": [
         {
+          "command": "nova-client.editEnvironment",
+          "when": "view == nova-client-explorer && viewItem == environment",
+          "group": "inline@1"
+        },
+        {
           "command": "nova-client.createRequest",
           "when": "view == nova-client-explorer && viewItem == collection || viewItem == folder",
           "group": "inline@1"
@@ -114,7 +124,7 @@
         },
         {
           "command": "nova-client.renameItem",
-          "when": "view == nova-client-explorer",
+          "when": "view == nova-client-explorer && viewItem == collection || viewItem == folder",
           "group": "inline@3"
         },
         {
