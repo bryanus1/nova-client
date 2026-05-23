@@ -44,6 +44,13 @@ export class NovaEditorPanel {
     NovaEditorPanel.currentPanel = new NovaEditorPanel(panel, extensionUri, node, activeEnvId);
   }
 
+  public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, node: NovaNode, activeEnvId: string | null) {
+    if (NovaEditorPanel.currentPanel) {
+      NovaEditorPanel.currentPanel.dispose();
+    }
+    NovaEditorPanel.currentPanel = new NovaEditorPanel(panel, extensionUri, node, activeEnvId);
+  }
+
   private constructor(
     panel: vscode.WebviewPanel,
     extensionUri: vscode.Uri,

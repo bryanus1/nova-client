@@ -246,6 +246,12 @@
     currentRequestItem = requestItem;
     activeEnvironmentId = activeEnvId;
 
+    // Persist Webview State (for VS Code Webview Panel Serializer)
+    vscode.setState({
+      node: node,
+      activeEnvironmentId: activeEnvId
+    });
+
     // Set headers
     requestNameInput.value = requestItem.name || 'Untitled Request';
     

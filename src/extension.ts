@@ -342,11 +342,32 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   context.subscriptions.push(workspaceListener);
+
+  // Register Webview Serializer for session persistence (survives VS Code restarts)
+  context.subscriptions.push(
+    vscode.window.registerWebviewPanelSerializer('novaRESTEditor', {
+      async deserializeWebviewPanel(panel: vscode.WebviewPanel, state: any) {
+        if (state && state.node) {
+          NovaEditorPanel.revive(
+            panel,
+            context.extensionUri,
+            state.node,
+            state.activeEnvironmentId
+          );
+        } else {
+          panel.dispose();
+        }
+      }
+    })
+  );
+
+  // Push StorageManager to context subscriptions for native disposal on deactivate
+  context.subscriptions.push({
+    dispose: () => storageManager.dispose()
+  });
 }
 
-export function deactivate() {
-  StorageManager.getInstance().dispose();
-}
+export function deactivate() {}
 
 // Tree Traversal Helpers
 function findItemByPathIndex(items: NovaItem[], index: number[]): NovaItem | null {
