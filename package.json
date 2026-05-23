@@ -32,6 +32,12 @@
         }
       ]
     },
+    "viewsWelcome": [
+      {
+        "view": "nova-client-explorer",
+        "contents": "Welcome to Nova REST Client!\nStore Postman-compatible collections and environments directly in your active workspace folder so they can be tracked in Git.\n\n[Create Collection](command:nova-client.createCollection)\n[Create Environment](command:nova-client.createEnvironment)"
+      }
+    ],
     "commands": [
       {
         "command": "nova-client.createCollection",
