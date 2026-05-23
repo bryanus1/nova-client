@@ -74,6 +74,51 @@ body {
 
 .method-select:focus {
   border-color: var(--vscode-focusBorder);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Premium Color Coding for HTTP Methods in select dropdown */
+.method-select[data-method="GET"] {
+  background-color: rgba(46, 204, 113, 0.15) !important;
+  color: #2ecc71 !important;
+  border-color: rgba(46, 204, 113, 0.4) !important;
+}
+
+.method-select[data-method="POST"] {
+  background-color: rgba(230, 126, 34, 0.15) !important;
+  color: #e67e22 !important;
+  border-color: rgba(230, 126, 34, 0.4) !important;
+}
+
+.method-select[data-method="PUT"] {
+  background-color: rgba(52, 152, 219, 0.15) !important;
+  color: #3498db !important;
+  border-color: rgba(52, 152, 219, 0.4) !important;
+}
+
+.method-select[data-method="DELETE"] {
+  background-color: rgba(231, 76, 60, 0.15) !important;
+  color: #e74c3c !important;
+  border-color: rgba(231, 76, 60, 0.4) !important;
+}
+
+.method-select[data-method="PATCH"] {
+  background-color: rgba(155, 89, 182, 0.15) !important;
+  color: #9b59b6 !important;
+  border-color: rgba(155, 89, 182, 0.4) !important;
+}
+
+.method-select[data-method="HEAD"],
+.method-select[data-method="OPTIONS"] {
+  background-color: rgba(149, 165, 166, 0.15) !important;
+  color: #95a5a6 !important;
+  border-color: rgba(149, 165, 166, 0.4) !important;
+}
+
+.method-select option {
+  background-color: var(--vscode-dropdown-background, #1e1e1e);
+  color: var(--vscode-dropdown-foreground, #cccccc);
+  font-weight: 600;
 }
 
 .input-container {

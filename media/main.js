@@ -29,6 +29,13 @@
   // Initialize Webview
   vscode.postMessage({ command: 'ready' });
 
+  // Method Select Color Sync
+  function updateMethodSelectColor() {
+    const method = methodSelect.value.toUpperCase();
+    methodSelect.setAttribute('data-method', method);
+  }
+  methodSelect.addEventListener('change', updateMethodSelectColor);
+
   // 1. Tab Switching Logic
   setupTabs('request-tabs', (tabId) => {
     // Show/hide sub tab contents
@@ -263,6 +270,7 @@
 
     const req = requestItem.request || {};
     methodSelect.value = (req.method || 'GET').toUpperCase();
+    updateMethodSelectColor();
     
     // URL
     let rawUrl = '';

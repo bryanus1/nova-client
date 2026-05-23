@@ -56,8 +56,37 @@ export class NovaExplorerProvider implements vscode.TreeDataProvider<NovaNode> {
           method = reqNode.method.toUpperCase();
         }
       }
-      item.description = method;
-      item.iconPath = new vscode.ThemeIcon('api');
+
+      // Map HTTP method to colored emoji badge for lateral explorer view
+      let methodEmoji = '🟢';
+      if (method === 'POST') {
+        methodEmoji = '🟠';
+      } else if (method === 'PUT') {
+        methodEmoji = '🔵';
+      } else if (method === 'DELETE') {
+        methodEmoji = '🔴';
+      } else if (method === 'PATCH') {
+        methodEmoji = '🟣';
+      } else if (method === 'HEAD' || method === 'OPTIONS') {
+        methodEmoji = '⚪';
+      }
+
+      item.description = `${methodEmoji} ${method}`;
+      
+      // Dynamic color-coding of sidebar request icon based on HTTP method
+      if (method === 'GET') {
+        item.iconPath = new vscode.ThemeIcon('api', new vscode.ThemeColor('charts.green'));
+      } else if (method === 'POST') {
+        item.iconPath = new vscode.ThemeIcon('api', new vscode.ThemeColor('charts.orange'));
+      } else if (method === 'PUT') {
+        item.iconPath = new vscode.ThemeIcon('api', new vscode.ThemeColor('charts.blue'));
+      } else if (method === 'DELETE') {
+        item.iconPath = new vscode.ThemeIcon('api', new vscode.ThemeColor('charts.red'));
+      } else if (method === 'PATCH') {
+        item.iconPath = new vscode.ThemeIcon('api', new vscode.ThemeColor('charts.purple'));
+      } else {
+        item.iconPath = new vscode.ThemeIcon('api', new vscode.ThemeColor('charts.foreground'));
+      }
       
       // Add command to open request on double-click or click
       item.command = {
