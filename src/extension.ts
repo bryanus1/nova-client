@@ -8,6 +8,11 @@ export function activate(context: vscode.ExtensionContext) {
   const storageManager = StorageManager.getInstance();
   const explorerProvider = new NovaExplorerProvider();
 
+  // Connect bidirectional active environment changes (Webview UI <-> Sidebar tree view)
+  NovaEditorPanel.onDidChangeActiveEnvironment = (envId) => {
+    explorerProvider.setActiveEnvironmentId(envId);
+  };
+
   // Register Tree View
   const treeView = vscode.window.createTreeView('nova-client-explorer', {
     treeDataProvider: explorerProvider,

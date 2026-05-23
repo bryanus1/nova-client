@@ -454,10 +454,9 @@
   // Switch environment selector
   envSelect.addEventListener('change', () => {
     const val = envSelect.value;
-    activeEnvironmentId = val === 'none' ? null : val;
-    // Notify VS Code to toggle workspace active env
     vscode.postMessage({
-      command: 'ready', // Re-fetch variables list
+      command: 'selectEnvironment',
+      environmentId: val
     });
   });
 

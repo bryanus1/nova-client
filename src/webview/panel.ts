@@ -6,6 +6,7 @@ import { NovaNode, NovaItem, NovaEnvironment } from '../types';
 
 export class NovaEditorPanel {
   public static currentPanel: NovaEditorPanel | undefined;
+  public static onDidChangeActiveEnvironment: ((envId: string | null) => void) | undefined;
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionUri: vscode.Uri;
   private _disposables: vscode.Disposable[] = [];
@@ -74,6 +75,13 @@ export class NovaEditorPanel {
         switch (message.command) {
           case 'ready':
             await this.loadRequest(this._currentNode!, activeEnvId);
+            break;
+          case 'selectEnvironment':
+            const envId = message.environmentId === 'none' ? null : message.environmentId;
+            if (NovaEditorPanel.onDidChangeActiveEnvironment) {
+              NovaEditorPanel.onDidChangeActiveEnvironment(envId);
+            }
+            await this.loadRequest(this._currentNode!, envId);
             break;
           case 'sendRequest':
             await this.handleSendRequest(message.request);
