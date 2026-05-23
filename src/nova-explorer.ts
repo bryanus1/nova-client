@@ -93,11 +93,18 @@ export class NovaExplorerProvider implements vscode.TreeDataProvider<NovaNode> {
 
   async getChildren(element?: NovaNode): Promise<NovaNode[]> {
     if (!element) {
-      // Root items: Collections + Environments Header
+      // 1. Load Collections & Environments
+      const loadedCols = await this.storageManager.loadCollections();
+      const loadedEnvs = await this.storageManager.loadEnvironments();
+
+      // If both are completely empty, return [] to trigger VS Code's Welcome View
+      if (loadedCols.length === 0 && loadedEnvs.length === 0) {
+        return [];
+      }
+
       const rootNodes: NovaNode[] = [];
 
-      // 1. Load Collections
-      const loadedCols = await this.storageManager.loadCollections();
+      // Populate Collections
       for (const entry of loadedCols) {
         rootNodes.push({
           id: entry.filePath, // File path acts as unique ID for the collection
