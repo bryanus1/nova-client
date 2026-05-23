@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Compilation output
+out/
+
+# Tests
+.vscode-test/
+
+# OS metadata
+.DS_Store
+Thumbs.db

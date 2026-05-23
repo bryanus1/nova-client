@@ -1,0 +1,135 @@
+{
+  "name": "nova-client",
+  "displayName": "Nova REST Client",
+  "description": "Git-friendly Postman-compatible REST client storing collections and environments directly in your workspace.",
+  "version": "0.1.0",
+  "publisher": "brayansanjuan",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Development"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "nova-client",
+          "title": "Nova Client",
+          "icon": "$(globe)"
+        }
+      ]
+    },
+    "views": {
+      "nova-client": [
+        {
+          "id": "nova-client-explorer",
+          "name": "Collections & Environments",
+          "type": "tree"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "nova-client.createCollection",
+        "title": "Nova: Create Collection",
+        "icon": "$(add)"
+      },
+      {
+        "command": "nova-client.createEnvironment",
+        "title": "Nova: Create Environment",
+        "icon": "$(add)"
+      },
+      {
+        "command": "nova-client.createRequest",
+        "title": "Nova: Create Request",
+        "icon": "$(add)"
+      },
+      {
+        "command": "nova-client.createFolder",
+        "title": "Nova: Create Folder",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "nova-client.refreshExplorer",
+        "title": "Nova: Refresh Explorer",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "nova-client.selectEnvironment",
+        "title": "Nova: Select Environment"
+      },
+      {
+        "command": "nova-client.openRequest",
+        "title": "Nova: Open Request"
+      },
+      {
+        "command": "nova-client.deleteItem",
+        "title": "Nova: Delete",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "nova-client.renameItem",
+        "title": "Nova: Rename",
+        "icon": "$(edit)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "nova-client.createCollection",
+          "when": "view == nova-client-explorer",
+          "group": "navigation@1"
+        },
+        {
+          "command": "nova-client.createEnvironment",
+          "when": "view == nova-client-explorer",
+          "group": "navigation@2"
+        },
+        {
+          "command": "nova-client.refreshExplorer",
+          "when": "view == nova-client-explorer",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "nova-client.createRequest",
+          "when": "view == nova-client-explorer && viewItem == collection || viewItem == folder",
+          "group": "inline@1"
+        },
+        {
+          "command": "nova-client.createFolder",
+          "when": "view == nova-client-explorer && viewItem == collection || viewItem == folder",
+          "group": "inline@2"
+        },
+        {
+          "command": "nova-client.renameItem",
+          "when": "view == nova-client-explorer",
+          "group": "inline@3"
+        },
+        {
+          "command": "nova-client.deleteItem",
+          "when": "view == nova-client-explorer",
+          "group": "inline@4"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "echo 'No linting configured'",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3"
+  }
+}
