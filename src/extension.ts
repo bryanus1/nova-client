@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { StorageManager } from './storage-manager';
 import { NovaExplorerProvider } from './nova-explorer';
 import { NovaEditorPanel } from './webview/panel';
+import { NovaEnvironmentEditorPanel } from './webview/env-panel';
 import { NovaNode, NovaCollection, NovaItem, NovaEnvironment } from './types';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -92,15 +93,38 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  // Command: Edit Environment File Directly
+  // Command: Edit Environment (Renames the environment)
   context.subscriptions.push(
     vscode.commands.registerCommand('nova-client.editEnvironment', async (node: NovaNode) => {
       if (node && node.filePath) {
         try {
-          const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(node.filePath));
-          await vscode.window.showTextDocument(doc);
+          const newName = await vscode.window.showInputBox({
+            prompt: `Rename Environment "${node.name}"`,
+            value: node.name,
+            validateInput: (val) => (val.trim() ? null : 'Name is required'),
+          });
+
+          if (!newName || newName === node.name) {
+            return;
+          }
+
+          const loaded = await storageManager.loadEnvironments();
+          const match = loaded.find(c => c.filePath === node.filePath);
+          if (match) {
+            match.environment.name = newName;
+            const fileName = vscode.Uri.file(node.filePath!).path.split('/').pop()!;
+            await storageManager.saveEnvironment(fileName, match.environment);
+            explorerProvider.refresh();
+            
+            // Sync with open Environment Editor panel if active
+            if (NovaEnvironmentEditorPanel.currentPanel && NovaEnvironmentEditorPanel.currentPanel.getNodeId() === node.filePath) {
+              await NovaEnvironmentEditorPanel.currentPanel.loadEnvironment({ ...node, name: newName });
+            }
+            
+            vscode.window.showInformationMessage(`Environment renamed to "${newName}"`);
+          }
         } catch (err: any) {
-          vscode.window.showErrorMessage(`Failed to open environment file: ${err.message}`);
+          vscode.window.showErrorMessage(`Failed to rename environment: ${err.message}`);
         }
       }
     })
@@ -225,6 +249,27 @@ export function activate(context: vscode.ExtensionContext) {
           node,
           explorerProvider.getActiveEnvironmentId()
         );
+      }
+    })
+  );
+
+  // Command: Open Environment
+  context.subscriptions.push(
+    vscode.commands.registerCommand('nova-client.openEnvironment', async (node: NovaNode) => {
+      if (node && node.type === 'environment') {
+        const activeId = node.filePath!;
+        explorerProvider.setActiveEnvironmentId(activeId);
+        
+        // Notify active request panel if it exists to reload active env vars
+        if (NovaEditorPanel.currentPanel) {
+          await NovaEditorPanel.currentPanel.loadRequest(
+            (NovaEditorPanel.currentPanel as any)._currentNode,
+            activeId
+          );
+        }
+
+        // Open dedicated Environment Editor Webview panel
+        NovaEnvironmentEditorPanel.createOrShow(context.extensionUri, node);
       }
     })
   );
@@ -372,6 +417,23 @@ export function activate(context: vscode.ExtensionContext) {
             context.extensionUri,
             state.node,
             state.activeEnvironmentId
+          );
+        } else {
+          panel.dispose();
+        }
+      }
+    })
+  );
+
+  // Register Environment Editor Webview Serializer
+  context.subscriptions.push(
+    vscode.window.registerWebviewPanelSerializer('novaRESTEnvironmentEditor', {
+      async deserializeWebviewPanel(panel: vscode.WebviewPanel, state: any) {
+        if (state && state.node) {
+          NovaEnvironmentEditorPanel.revive(
+            panel,
+            context.extensionUri,
+            state.node
           );
         } else {
           panel.dispose();

@@ -111,8 +111,8 @@ export class NovaExplorerProvider implements vscode.TreeDataProvider<NovaNode> {
       }
 
       item.command = {
-        command: 'nova-client.selectEnvironment',
-        title: 'Select Environment',
+        command: 'nova-client.openEnvironment',
+        title: 'Open Environment',
         arguments: [element],
       };
     }
